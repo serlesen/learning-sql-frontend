@@ -399,5 +399,30 @@
       ],
       "recap": "Tu sais lire, filtrer, ajouter et modifier des données : `SELECT`, `WHERE`, `INSERT` et `UPDATE` sont la base de toute base de données SQL."
     }
+  },
+  "moreGames": {
+    "label": "Plus de jeux",
+    "games": {
+      "html": {
+        "badge": "HTML",
+        "name": "Brique par brique",
+        "tagline": "Apprends le HTML et le CSS en construisant avec des briques"
+      },
+      "js": {
+        "badge": "JS",
+        "name": "La boutique de briques",
+        "tagline": "Apprends JavaScript et le DOM dans une boutique de jouets"
+      },
+      "sql": {
+        "badge": "SQL",
+        "name": "Brique par brique SQL",
+        "tagline": "Apprends le SQL en interrogeant une boutique de briques"
+      },
+      "node": {
+        "badge": "Node",
+        "name": "Brick Shop API",
+        "tagline": "Apprends Node.js et Express en créant une API"
+      }
+    }
   }
 }

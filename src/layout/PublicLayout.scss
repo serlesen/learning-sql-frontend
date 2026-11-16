@@ -26,6 +26,15 @@
   }
 }
 
+.topbar-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $spacing-6;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
