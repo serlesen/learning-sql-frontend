@@ -1,4 +1,5 @@
 @use 'config' as *;
+@use 'typography' as *;
 
 @mixin panel {
   background: $color-panel;
@@ -16,4 +17,24 @@
 @mixin studs($light, $dark) {
   background-image: radial-gradient(circle at 10px 10px, $light 0 5px, $dark 5.5px 6.5px, transparent 7px);
   background-size: $stud $stud;
+}
+
+@mixin topbar-pill {
+  font: inherit;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-white;
+  background: transparent;
+  border: $border-width-thick solid $color-ink-muted;
+  border-radius: $radius-pill;
+  cursor: pointer;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: $color-ink-inverse-soft;
+  }
+
+  &:focus-visible {
+    outline-color: $color-yellow;
+  }
 }

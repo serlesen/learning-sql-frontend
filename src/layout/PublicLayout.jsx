@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { BrickIcon } from '../components/icons/BrickIcon.jsx'
 import { LanguageSelect } from '../components/language-select/LanguageSelect.jsx'
+import { MoreGames } from '../components/more-games/MoreGames.jsx'
 import { Footer } from './Footer.jsx'
 import './PublicLayout.scss'
 
@@ -15,7 +16,10 @@ export function PublicLayout({ navigation, children }) {
           {t('app.name')}
         </span>
         {navigation}
-        <LanguageSelect />
+        <div className="topbar-actions">
+          <MoreGames />
+          <LanguageSelect />
+        </div>
       </header>
       {children}
       <Footer />

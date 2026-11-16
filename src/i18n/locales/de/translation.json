@@ -399,5 +399,30 @@
       ],
       "recap": "Du kannst Daten lesen, filtern, hinzufügen und ändern: `SELECT`, `WHERE`, `INSERT` und `UPDATE` sind die Basis jeder SQL-Datenbank."
     }
+  },
+  "moreGames": {
+    "label": "Weitere Spiele",
+    "games": {
+      "html": {
+        "badge": "HTML",
+        "name": "Stein auf Stein",
+        "tagline": "Lerne HTML und CSS, indem du mit Steinen baust"
+      },
+      "js": {
+        "badge": "JS",
+        "name": "Der Steineladen",
+        "tagline": "Lerne JavaScript und das DOM in einem Spielzeugladen"
+      },
+      "sql": {
+        "badge": "SQL",
+        "name": "Stein auf Stein SQL",
+        "tagline": "Lerne SQL, indem du einen Steineladen abfragst"
+      },
+      "node": {
+        "badge": "Node",
+        "name": "Brick Shop API",
+        "tagline": "Lerne Node.js und Express, indem du eine API baust"
+      }
+    }
   }
 }

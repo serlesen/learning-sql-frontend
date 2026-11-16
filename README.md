@@ -68,16 +68,17 @@ src/
 │   ├── button/         Button (primary, secondary, quiet)
 │   ├── icons/          SVG icons as React components, drawn with currentColor
 │   ├── language-select/ LanguageSelect: switches and saves the interface language
+│   ├── more-games/     MoreGames: the top bar menu linking the other games of the series
 │   ├── rich-text/      RichText: text where `backticks` mark inline code
 │   └── toggle/         Toggle switch
 ├── hooks/              useSqlEngine (loads SQLite), useCodeComments (translated code comments)
 ├── i18n/               i18next setup and locales/<en|fr|es|it|de>/translation.json
-├── layout/             PublicLayout: top bar with the brand, the step strip and the language selector; Footer with the project links
+├── layout/             PublicLayout: top bar with the brand, the step strip, the More games menu and the language selector; Footer with the project links
 ├── services/           sqlEngine (loads sql.js and its .wasm once), progressService and languageService (localStorage)
 ├── stores/             progressStore (zustand): current step, completed steps, query and hints per step
 ├── styles/             _config.scss (tokens), _typography.scss, _mixins.scss, global.scss
 ├── test/               shared test setup, render helper, SQLite loader for node
-├── types/              enums (CheckItem, QueryIssue, RunStatus, ResultTab, ButtonVariant, Language, FooterLink) and JSDoc entities
+├── types/              enums (CheckItem, QueryIssue, RunStatus, ResultTab, ButtonVariant, Language, FooterLink, Game) and JSDoc entities
 ├── utils/              database (run a query on a fresh database), compare (check a result), codeComments
 └── views/
     └── playground/     the only page, its components grouped by feature
