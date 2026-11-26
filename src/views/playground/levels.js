@@ -146,4 +146,33 @@ export const levels = [
     solution: "UPDATE orders\nSET status = 'shipped'\nWHERE status = 'pending' AND ordered_on < '2024-11-01';\n",
     table: 'orders',
   },
+  {
+    id: 'join-on',
+    concept: 'JOIN',
+    example: 'SELECT orders.id, customers.city\nFROM orders\nJOIN customers ON orders.customer_id = customers.id; -- {{matchingRowsOnly}}',
+    sql: 'SELECT customer, brick_id FROM orders;\n',
+    solution: 'SELECT orders.customer, bricks.name\nFROM orders\nJOIN bricks ON orders.brick_id = bricks.id;\n',
+  },
+  {
+    id: 'join-alias',
+    concept: 'JOIN',
+    example: 'SELECT o.id, c.city\nFROM orders AS o -- {{shortName}}\nJOIN customers AS c ON o.customer_id = c.id;',
+    sql: 'SELECT id, customer, name\nFROM orders\nJOIN bricks ON orders.brick_id = bricks.id;\n',
+    solution: 'SELECT o.id, o.customer, b.name\nFROM orders AS o\nJOIN bricks AS b ON o.brick_id = b.id;\n',
+  },
+  {
+    id: 'join-where',
+    concept: 'JOIN',
+    example: "SELECT o.id, c.city\nFROM orders AS o\nJOIN customers AS c ON o.customer_id = c.id\nWHERE c.city = 'Paris' AND o.status = 'pending';",
+    sql: 'SELECT o.customer, b.name, b.color\nFROM orders AS o\nJOIN bricks AS b ON o.brick_id = b.id;\n',
+    solution: "SELECT o.customer, b.name, b.color\nFROM orders AS o\nJOIN bricks AS b ON o.brick_id = b.id\nWHERE b.color = 'red' AND o.status = 'shipped';\n",
+  },
+  {
+    id: 'join-compute',
+    concept: 'JOIN',
+    example: 'SELECT o.id, o.quantity * c.discount AS saved\nFROM orders AS o\nJOIN customers AS c ON o.customer_id = c.id\nORDER BY saved DESC;',
+    sql: 'SELECT o.customer, b.name, o.quantity\nFROM orders AS o\nJOIN bricks AS b ON o.brick_id = b.id;\n',
+    solution: 'SELECT o.customer, b.name, o.quantity * b.price AS total\nFROM orders AS o\nJOIN bricks AS b ON o.brick_id = b.id\nORDER BY total DESC;\n',
+    ordered: true,
+  },
 ]

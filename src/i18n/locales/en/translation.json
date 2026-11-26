@@ -38,7 +38,9 @@
     "monthAsText": "'09', '10', '11'... as text",
     "fixTheTypes": "Text and dates need quotes, numbers don't",
     "otherColumnsEmpty": "id is picked by the database, the other columns stay empty",
-    "doubleIt": "the new value is computed from the old one"
+    "doubleIt": "the new value is computed from the old one",
+    "matchingRowsOnly": "only the orders with a matching customer",
+    "shortName": "o is a short name for orders"
   },
   "steps": {
     "label": "Steps",
@@ -398,6 +400,62 @@
         "`UPDATE orders SET status = 'shipped' WHERE status = 'pending' AND ordered_on < '2024-11-01';`"
       ],
       "recap": "You can read, filter, add and change data: `SELECT`, `WHERE`, `INSERT` and `UPDATE` are the base of every SQL database."
+    },
+    "join-on": {
+      "title": "Two tables at once: JOIN",
+      "intro": [
+        "An order only keeps the id of its brick in `brick_id`: to know the name of the brick, look for the row of `bricks` with that `id`.",
+        "`JOIN` does it for you: `FROM orders JOIN bricks ON orders.brick_id = bricks.id` glues each order to its brick. Write `table.column` to say which table a column comes from."
+      ],
+      "goal": "Show the customer of each order and the name of the brick they ordered.",
+      "hints": [
+        "Add `JOIN bricks ON ...` after `FROM orders`.",
+        "The condition links `orders.brick_id` to `bricks.id`, then select `orders.customer` and `bricks.name`.",
+        "`SELECT orders.customer, bricks.name FROM orders JOIN bricks ON orders.brick_id = bricks.id;`"
+      ],
+      "recap": "`JOIN ... ON` keeps only the rows that match in both tables: the bricks never ordered don't show up."
+    },
+    "join-alias": {
+      "title": "Short names for tables",
+      "intro": [
+        "Both tables have an `id` column: SQLite doesn't know which one you mean and answers `ambiguous column name`.",
+        "Give each table a short name with `AS`: `FROM orders AS o JOIN bricks AS b`. Then `o.id` is the id of the order and `b.id` the id of the brick."
+      ],
+      "goal": "Fix the error: show the id of the order, the customer and the name of the brick, with the short names `o` and `b`.",
+      "hints": [
+        "Write `orders AS o` and `bricks AS b`, then use `o.` and `b.` everywhere, in the `ON` too.",
+        "The id you want is the one of the order: `o.id`.",
+        "`SELECT o.id, o.customer, b.name FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id;`"
+      ],
+      "recap": "Short names keep joins readable, and `o.id` or `b.id` says exactly which column you want."
+    },
+    "join-where": {
+      "title": "Filter a join",
+      "intro": [
+        "A `WHERE` goes after the `JOIN`, and can use the columns of both tables.",
+        "Here, the color comes from `bricks` and the status from `orders`: a single query answers a question about both."
+      ],
+      "goal": "Show only the shipped orders (status `'shipped'`) of red bricks (`red`).",
+      "hints": [
+        "Add a `WHERE` after the `ON`, with two conditions joined by `AND`.",
+        "One condition on `b.color`, one on `o.status`.",
+        "`WHERE b.color = 'red' AND o.status = 'shipped'`"
+      ],
+      "recap": "After a `JOIN`, `WHERE` filters with the columns of every joined table."
+    },
+    "join-compute": {
+      "title": "Compute across tables",
+      "intro": [
+        "The quantity is in `orders`, the price in `bricks`: once joined, you can compute with both, like `o.quantity * b.price`.",
+        "Name the result with `AS` and sort with `ORDER BY`, as you did with a single table."
+      ],
+      "goal": "Show the customer, the brick and the total price of each order (named `total`), the most expensive first.",
+      "hints": [
+        "Replace `o.quantity` with `o.quantity * b.price AS total`.",
+        "Add `ORDER BY total DESC` at the end.",
+        "`SELECT o.customer, b.name, o.quantity * b.price AS total FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id ORDER BY total DESC;`"
+      ],
+      "recap": "You can read, filter, add, change and join data: `SELECT`, `WHERE`, `INSERT`, `UPDATE` and `JOIN` are the base of every SQL database."
     }
   },
   "moreGames": {

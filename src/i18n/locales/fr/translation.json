@@ -38,7 +38,9 @@
     "monthAsText": "'09', '10', '11'... en texte",
     "fixTheTypes": "Le texte et les dates ont besoin de guillemets, pas les nombres",
     "otherColumnsEmpty": "l'id est choisi par la base, les autres colonnes restent vides",
-    "doubleIt": "la nouvelle valeur est calculée à partir de l'ancienne"
+    "doubleIt": "la nouvelle valeur est calculée à partir de l'ancienne",
+    "matchingRowsOnly": "seulement les commandes qui ont un client correspondant",
+    "shortName": "o est un nom court pour orders"
   },
   "steps": {
     "label": "Étapes",
@@ -398,6 +400,62 @@
         "`UPDATE orders SET status = 'shipped' WHERE status = 'pending' AND ordered_on < '2024-11-01';`"
       ],
       "recap": "Tu sais lire, filtrer, ajouter et modifier des données : `SELECT`, `WHERE`, `INSERT` et `UPDATE` sont la base de toute base de données SQL."
+    },
+    "join-on": {
+      "title": "Deux tables à la fois : JOIN",
+      "intro": [
+        "Une commande garde seulement l'id de sa brique dans `brick_id` : pour connaître le nom de la brique, il faut chercher la ligne de `bricks` qui a cet `id`.",
+        "`JOIN` le fait pour toi : `FROM orders JOIN bricks ON orders.brick_id = bricks.id` colle chaque commande à sa brique. Écris `table.column` pour dire de quelle table vient une colonne."
+      ],
+      "goal": "Affiche le client de chaque commande et le nom de la brique commandée.",
+      "hints": [
+        "Ajoute `JOIN bricks ON ...` après `FROM orders`.",
+        "La condition relie `orders.brick_id` à `bricks.id`, puis sélectionne `orders.customer` et `bricks.name`.",
+        "`SELECT orders.customer, bricks.name FROM orders JOIN bricks ON orders.brick_id = bricks.id;`"
+      ],
+      "recap": "`JOIN ... ON` garde seulement les lignes qui correspondent dans les deux tables : les briques jamais commandées n'apparaissent pas."
+    },
+    "join-alias": {
+      "title": "Des noms courts pour les tables",
+      "intro": [
+        "Les deux tables ont une colonne `id` : SQLite ne sait pas laquelle tu veux et répond `ambiguous column name`.",
+        "Donne un nom court à chaque table avec `AS` : `FROM orders AS o JOIN bricks AS b`. Alors `o.id` est l'id de la commande et `b.id` celui de la brique."
+      ],
+      "goal": "Corrige l'erreur : affiche l'id de la commande, le client et le nom de la brique, avec les noms courts `o` et `b`.",
+      "hints": [
+        "Écris `orders AS o` et `bricks AS b`, puis utilise `o.` et `b.` partout, dans le `ON` aussi.",
+        "L'id voulu est celui de la commande : `o.id`.",
+        "`SELECT o.id, o.customer, b.name FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id;`"
+      ],
+      "recap": "Les noms courts rendent les jointures lisibles, et `o.id` ou `b.id` dit exactement quelle colonne tu veux."
+    },
+    "join-where": {
+      "title": "Filtrer une jointure",
+      "intro": [
+        "Un `WHERE` se place après le `JOIN`, et peut utiliser les colonnes des deux tables.",
+        "Ici, la couleur vient de `bricks` et le statut de `orders` : une seule requête répond à une question sur les deux."
+      ],
+      "goal": "Affiche seulement les commandes expédiées (statut `'shipped'`) de briques rouges (`red`).",
+      "hints": [
+        "Ajoute un `WHERE` après le `ON`, avec deux conditions reliées par `AND`.",
+        "Une condition sur `b.color`, une sur `o.status`.",
+        "`WHERE b.color = 'red' AND o.status = 'shipped'`"
+      ],
+      "recap": "Après un `JOIN`, `WHERE` filtre avec les colonnes de toutes les tables jointes."
+    },
+    "join-compute": {
+      "title": "Calculer entre deux tables",
+      "intro": [
+        "La quantité est dans `orders`, le prix dans `bricks` : une fois jointes, tu peux calculer avec les deux, comme `o.quantity * b.price`.",
+        "Nomme le résultat avec `AS` et trie avec `ORDER BY`, comme avec une seule table."
+      ],
+      "goal": "Affiche le client, la brique et le prix total de chaque commande (nommé `total`), la plus chère d'abord.",
+      "hints": [
+        "Remplace `o.quantity` par `o.quantity * b.price AS total`.",
+        "Ajoute `ORDER BY total DESC` à la fin.",
+        "`SELECT o.customer, b.name, o.quantity * b.price AS total FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id ORDER BY total DESC;`"
+      ],
+      "recap": "Tu sais lire, filtrer, ajouter, modifier et joindre des données : `SELECT`, `WHERE`, `INSERT`, `UPDATE` et `JOIN` sont la base de toute base de données SQL."
     }
   },
   "moreGames": {

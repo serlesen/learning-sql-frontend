@@ -20,9 +20,9 @@ describe('levels', () => {
   const run = (level, sql) => runQuery(SQL, SHOP_SEED, sql, level.table && tableCheck(level.table))
 
   describe('steps', () => {
-    it('has 20 steps with unique ids', () => {
-      expect(levels).toHaveLength(20)
-      expect(new Set(levels.map((l) => l.id)).size).toBe(20)
+    it('has 24 steps with unique ids', () => {
+      expect(levels).toHaveLength(24)
+      expect(new Set(levels.map((l) => l.id)).size).toBe(24)
     })
 
     it('has a solution that runs and returns rows', () => {

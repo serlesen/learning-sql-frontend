@@ -38,7 +38,9 @@
     "monthAsText": "'09', '10', '11'... como texto",
     "fixTheTypes": "El texto y las fechas necesitan comillas, los números no",
     "otherColumnsEmpty": "la base elige el id, las demás columnas quedan vacías",
-    "doubleIt": "el nuevo valor se calcula a partir del anterior"
+    "doubleIt": "el nuevo valor se calcula a partir del anterior",
+    "matchingRowsOnly": "solo los pedidos con un cliente que coincide",
+    "shortName": "o es un nombre corto para orders"
   },
   "steps": {
     "label": "Pasos",
@@ -398,6 +400,62 @@
         "`UPDATE orders SET status = 'shipped' WHERE status = 'pending' AND ordered_on < '2024-11-01';`"
       ],
       "recap": "Sabes leer, filtrar, añadir y modificar datos: `SELECT`, `WHERE`, `INSERT` y `UPDATE` son la base de toda base de datos SQL."
+    },
+    "join-on": {
+      "title": "Dos tablas a la vez: JOIN",
+      "intro": [
+        "Un pedido solo guarda el id de su ladrillo en `brick_id`: para saber el nombre del ladrillo, hay que buscar la fila de `bricks` con ese `id`.",
+        "`JOIN` lo hace por ti: `FROM orders JOIN bricks ON orders.brick_id = bricks.id` pega cada pedido a su ladrillo. Escribe `table.column` para decir de qué tabla viene una columna."
+      ],
+      "goal": "Muestra el cliente de cada pedido y el nombre de el ladrillo que pidió.",
+      "hints": [
+        "Añade `JOIN bricks ON ...` después de `FROM orders`.",
+        "La condición une `orders.brick_id` con `bricks.id`; luego selecciona `orders.customer` y `bricks.name`.",
+        "`SELECT orders.customer, bricks.name FROM orders JOIN bricks ON orders.brick_id = bricks.id;`"
+      ],
+      "recap": "`JOIN ... ON` solo mantiene las filas que coinciden en las dos tablas: los ladrillos que nunca se pidieron no aparecen."
+    },
+    "join-alias": {
+      "title": "Nombres cortos para las tablas",
+      "intro": [
+        "Las dos tablas tienen una columna `id`: SQLite no sabe cuál quieres y responde `ambiguous column name`.",
+        "Da a cada tabla un nombre corto con `AS`: `FROM orders AS o JOIN bricks AS b`. Así `o.id` es el id del pedido y `b.id` el del ladrillo."
+      ],
+      "goal": "Corrige el error: muestra el id del pedido, el cliente y el nombre del ladrillo, con los nombres cortos `o` y `b`.",
+      "hints": [
+        "Escribe `orders AS o` y `bricks AS b`, y usa `o.` y `b.` en todas partes, también en el `ON`.",
+        "El id que quieres es el del pedido: `o.id`.",
+        "`SELECT o.id, o.customer, b.name FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id;`"
+      ],
+      "recap": "Los nombres cortos hacen legibles las uniones, y `o.id` o `b.id` dice exactamente qué columna quieres."
+    },
+    "join-where": {
+      "title": "Filtrar una unión",
+      "intro": [
+        "Un `WHERE` va después del `JOIN`, y puede usar las columnas de las dos tablas.",
+        "Aquí, el color viene de `bricks` y el estado de `orders`: una sola consulta responde a una pregunta sobre las dos."
+      ],
+      "goal": "Muestra solo los pedidos enviados (estado `'shipped'`) de ladrillos rojos (`red`).",
+      "hints": [
+        "Añade un `WHERE` después del `ON`, con dos condiciones unidas por `AND`.",
+        "Una condición sobre `b.color`, otra sobre `o.status`.",
+        "`WHERE b.color = 'red' AND o.status = 'shipped'`"
+      ],
+      "recap": "Después de un `JOIN`, `WHERE` filtra con las columnas de todas las tablas unidas."
+    },
+    "join-compute": {
+      "title": "Calcular entre tablas",
+      "intro": [
+        "La cantidad está en `orders`, el precio en `bricks`: una vez unidas, puedes calcular con las dos, como `o.quantity * b.price`.",
+        "Nombra el resultado con `AS` y ordena con `ORDER BY`, como con una sola tabla."
+      ],
+      "goal": "Muestra el cliente, el ladrillo y el precio total de cada pedido (llamado `total`), el más caro primero.",
+      "hints": [
+        "Cambia `o.quantity` por `o.quantity * b.price AS total`.",
+        "Añade `ORDER BY total DESC` al final.",
+        "`SELECT o.customer, b.name, o.quantity * b.price AS total FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id ORDER BY total DESC;`"
+      ],
+      "recap": "Sabes leer, filtrar, añadir, modificar y unir datos: `SELECT`, `WHERE`, `INSERT`, `UPDATE` y `JOIN` son la base de toda base de datos SQL."
     }
   },
   "moreGames": {

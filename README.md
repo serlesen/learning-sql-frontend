@@ -1,7 +1,7 @@
 # Brick by Brick SQL
 
 A browser-only playground where students learn SQL in a toy brick shop. The SQL editor is on the left, a
-database client on the right. Each of the 20 steps explains one idea, runs the query live on a real SQLite
+database client on the right. Each of the 24 steps explains one idea, runs the query live on a real SQLite
 database, checks the result against the expected one and offers hints. It is the SQL companion of
 [Brick by Brick](https://learning-html.sergiolema.dev) (HTML and CSS), with the same design.
 
@@ -14,8 +14,9 @@ database, checks the result against the expected one and offers hints. It is the
 | 14–15 | `BETWEEN`, `strftime` | periods and parts of a date (text vs number) |
 | 16–17 | `INSERT` | value types, generated ids and defaults |
 | 18–20 | `UPDATE` | change one row, compute from the old value, never forget the `WHERE` |
+| 21–24 | `JOIN` | link `orders` to `bricks`, short table names, filter and compute across both tables |
 
-The shop database has two tables, `bricks` (numbers, text, a `REAL` price and a `DATE`) and `orders`.
+The shop database has two tables, `bricks` (numbers, text, a `REAL` price and a `DATE`) and `orders`, linked by `orders.brick_id`.
 Students can browse them, with their column types, in the tabs of the database window.
 
 The interface and the lessons are available in English (default), French, Spanish, Italian and German, picked
@@ -83,13 +84,13 @@ src/
 └── views/
     └── playground/     the only page, its components grouped by feature
         ├── PlaygroundView.jsx
-        ├── levels.js       the 20 steps: starter query, solution, example
+        ├── levels.js       the 24 steps: starter query, solution, example
         ├── shopDatabase.js the tables and rows of the brick shop
         ├── check/          QueryCheck: SQLite error, checks passed, success
         ├── editor/         SqlEditor: query.sql
         ├── lesson/         LessonPanel: explanation, goal, hints, solution
         ├── results/        ResultsWindow (database client, tabs), QueryResult, ResultTable
-        └── steps/          StepStrip: the 20 steps as studs in the top bar
+        └── steps/          StepStrip: the 24 steps as studs in the top bar
 ```
 
 ### How a step is checked
