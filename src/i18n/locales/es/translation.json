@@ -34,11 +34,10 @@
     "moreThan30": "más de 30, sin incluir 30",
     "startsWithB": "empieza por B",
     "before2024": "añadidas antes de 2024",
-    "bothIncluded": "10 y 30 incluidos",
-    "monthAsText": "'09', '10', '11'... como texto",
     "fixTheTypes": "El texto y las fechas necesitan comillas, los números no",
-    "otherColumnsEmpty": "la base elige el id, las demás columnas quedan vacías",
-    "doubleIt": "el nuevo valor se calcula a partir del anterior"
+    "doubleIt": "el nuevo valor se calcula a partir del anterior",
+    "matchingRowsOnly": "solo los pedidos con un cliente que coincide",
+    "shortName": "o es un nombre corto para orders"
   },
   "steps": {
     "label": "Pasos",
@@ -287,48 +286,6 @@
       ],
       "recap": "`AND` va antes que `OR`: añade paréntesis siempre que los mezcles, para que la consulta haga lo que quieres."
     },
-    "where-in": {
-      "title": "Uno de una lista: IN",
-      "intro": [
-        "Varios `OR` sobre la misma columna se hacen largos. `IN` comprueba que un valor está en una lista: `customer IN ('Ana', 'Ben')` significa `customer = 'Ana' OR customer = 'Ben'`.",
-        "La lista va entre paréntesis, con sus valores separados por comas."
-      ],
-      "goal": "Muestra el cliente y la cantidad de los pedidos de Ana, Chloe y Farid.",
-      "hints": [
-        "Añade `WHERE customer IN (...)`.",
-        "Cada nombre es texto: entre comillas, separados por comas.",
-        "`WHERE customer IN ('Ana', 'Chloe', 'Farid')`"
-      ],
-      "recap": "`IN (...)` es una forma corta de escribir varios `OR` sobre la misma columna."
-    },
-    "date-between": {
-      "title": "Un periodo: BETWEEN",
-      "intro": [
-        "`BETWEEN` conserva los valores desde un inicio hasta un final, ambos incluidos: `quantity BETWEEN 10 AND 30` significa `quantity >= 10 AND quantity <= 30`.",
-        "Funciona con números, y con fechas escritas año-mes-día."
-      ],
-      "goal": "Muestra el nombre y la fecha de los ladrillos añadidos del 1 de marzo al 30 de junio de 2024.",
-      "hints": [
-        "Añade una condición sobre `added_on` con `BETWEEN ... AND ...`.",
-        "Las dos fechas son texto entre comillas: `'2024-03-01'` y `'2024-06-30'`.",
-        "`WHERE added_on BETWEEN '2024-03-01' AND '2024-06-30'`"
-      ],
-      "recap": "`BETWEEN` incluye los dos extremos del intervalo."
-    },
-    "date-parts": {
-      "title": "Una parte de la fecha",
-      "intro": [
-        "`strftime` extrae una parte de una fecha: `strftime('%Y', added_on)` da el año, `'%m'` el mes, `'%d'` el día.",
-        "Cuidado con los tipos: el resultado es texto, así que compáralo con texto, `'2023'`, no con el número `2023`."
-      ],
-      "goal": "Muestra el nombre y la fecha de los ladrillos añadidos en 2023.",
-      "hints": [
-        "Añade una condición que compare `strftime('%Y', added_on)` con el año.",
-        "El año es texto: escríbelo entre comillas.",
-        "`WHERE strftime('%Y', added_on) = '2023'`"
-      ],
-      "recap": "`strftime` devuelve texto: `'2023'` coincide, el número `2023` no."
-    },
     "insert-row": {
       "title": "Añadir una fila: INSERT",
       "intro": [
@@ -342,20 +299,6 @@
         "`VALUES (11, 'Classic 1x2', 'green', 2, 0.10, 60, '2024-11-09');`"
       ],
       "recap": "Los números tal cual, el texto y las fechas entre comillas: cada valor con su tipo, en el orden de las columnas."
-    },
-    "insert-defaults": {
-      "title": "Deja que la base complete",
-      "intro": [
-        "Un `id` declarado `INTEGER PRIMARY KEY` lo elige la base de datos cuando lo omites: el siguiente número libre. Dos filas no pueden tener el mismo id.",
-        "Una columna con un `DEFAULT` toma su valor por defecto cuando la omites: el estado de un pedido es `'pending'`."
-      ],
-      "goal": "El pedido de Gina falla: el id 1 ya está ocupado. Insértalo de nuevo dejando que la base elija el `id` y el `status`.",
-      "hints": [
-        "Quita `id` y `status` de la lista de columnas.",
-        "Quita también sus valores: los valores deben corresponder a las columnas, uno a uno.",
-        "`INSERT INTO orders (customer, brick_id, quantity, ordered_on) VALUES ('Gina', 3, 20, '2024-11-12');`"
-      ],
-      "recap": "Omite una columna y la base la rellena: el siguiente id, el valor por defecto o `NULL`."
     },
     "update-one": {
       "title": "Modificar una fila: UPDATE",
@@ -398,6 +341,62 @@
         "`UPDATE orders SET status = 'shipped' WHERE status = 'pending' AND ordered_on < '2024-11-01';`"
       ],
       "recap": "Sabes leer, filtrar, añadir y modificar datos: `SELECT`, `WHERE`, `INSERT` y `UPDATE` son la base de toda base de datos SQL."
+    },
+    "join-on": {
+      "title": "Dos tablas a la vez: JOIN",
+      "intro": [
+        "Un pedido solo guarda el id de su ladrillo en `brick_id`: para saber el nombre del ladrillo, hay que buscar la fila de `bricks` con ese `id`.",
+        "`JOIN` lo hace por ti: `FROM orders JOIN bricks ON orders.brick_id = bricks.id` pega cada pedido a su ladrillo. Escribe `table.column` para decir de qué tabla viene una columna."
+      ],
+      "goal": "Muestra el cliente de cada pedido y el nombre de el ladrillo que pidió.",
+      "hints": [
+        "Añade `JOIN bricks ON ...` después de `FROM orders`.",
+        "La condición une `orders.brick_id` con `bricks.id`; luego selecciona `orders.customer` y `bricks.name`.",
+        "`SELECT orders.customer, bricks.name FROM orders JOIN bricks ON orders.brick_id = bricks.id;`"
+      ],
+      "recap": "`JOIN ... ON` solo mantiene las filas que coinciden en las dos tablas: los ladrillos que nunca se pidieron no aparecen."
+    },
+    "join-alias": {
+      "title": "Nombres cortos para las tablas",
+      "intro": [
+        "Las dos tablas tienen una columna `id`: SQLite no sabe cuál quieres y responde `ambiguous column name`.",
+        "Da a cada tabla un nombre corto con `AS`: `FROM orders AS o JOIN bricks AS b`. Así `o.id` es el id del pedido y `b.id` el del ladrillo."
+      ],
+      "goal": "Corrige el error: muestra el id del pedido, el cliente y el nombre del ladrillo, con los nombres cortos `o` y `b`.",
+      "hints": [
+        "Escribe `orders AS o` y `bricks AS b`, y usa `o.` y `b.` en todas partes, también en el `ON`.",
+        "El id que quieres es el del pedido: `o.id`.",
+        "`SELECT o.id, o.customer, b.name FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id;`"
+      ],
+      "recap": "Los nombres cortos hacen legibles las uniones, y `o.id` o `b.id` dice exactamente qué columna quieres."
+    },
+    "join-where": {
+      "title": "Filtrar una unión",
+      "intro": [
+        "Un `WHERE` va después del `JOIN`, y puede usar las columnas de las dos tablas.",
+        "Aquí, el color viene de `bricks` y el estado de `orders`: una sola consulta responde a una pregunta sobre las dos."
+      ],
+      "goal": "Muestra solo los pedidos enviados (estado `'shipped'`) de ladrillos rojos (`red`).",
+      "hints": [
+        "Añade un `WHERE` después del `ON`, con dos condiciones unidas por `AND`.",
+        "Una condición sobre `b.color`, otra sobre `o.status`.",
+        "`WHERE b.color = 'red' AND o.status = 'shipped'`"
+      ],
+      "recap": "Después de un `JOIN`, `WHERE` filtra con las columnas de todas las tablas unidas."
+    },
+    "join-compute": {
+      "title": "Calcular entre tablas",
+      "intro": [
+        "La cantidad está en `orders`, el precio en `bricks`: una vez unidas, puedes calcular con las dos, como `o.quantity * b.price`.",
+        "Nombra el resultado con `AS` y ordena con `ORDER BY`, como con una sola tabla."
+      ],
+      "goal": "Muestra el cliente, el ladrillo y el precio total de cada pedido (llamado `total`), el más caro primero.",
+      "hints": [
+        "Cambia `o.quantity` por `o.quantity * b.price AS total`.",
+        "Añade `ORDER BY total DESC` al final.",
+        "`SELECT o.customer, b.name, o.quantity * b.price AS total FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id ORDER BY total DESC;`"
+      ],
+      "recap": "Sabes leer, filtrar, añadir, modificar y unir datos: `SELECT`, `WHERE`, `INSERT`, `UPDATE` y `JOIN` son la base de toda base de datos SQL."
     }
   },
   "moreGames": {

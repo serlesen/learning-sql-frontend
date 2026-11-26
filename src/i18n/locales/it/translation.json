@@ -34,11 +34,10 @@
     "moreThan30": "più di 30, 30 escluso",
     "startsWithB": "inizia con B",
     "before2024": "aggiunti prima del 2024",
-    "bothIncluded": "10 e 30 inclusi",
-    "monthAsText": "'09', '10', '11'... come testo",
     "fixTheTypes": "Il testo e le date vogliono gli apici, i numeri no",
-    "otherColumnsEmpty": "l'id lo sceglie il database, le altre colonne restano vuote",
-    "doubleIt": "il nuovo valore è calcolato da quello vecchio"
+    "doubleIt": "il nuovo valore è calcolato da quello vecchio",
+    "matchingRowsOnly": "solo gli ordini con un cliente corrispondente",
+    "shortName": "o è un nome breve per orders"
   },
   "steps": {
     "label": "Passi",
@@ -287,48 +286,6 @@
       ],
       "recap": "`AND` viene prima di `OR`: aggiungi le parentesi ogni volta che li mescoli, così la query fa quello che intendi."
     },
-    "where-in": {
-      "title": "Uno di una lista: IN",
-      "intro": [
-        "Tanti `OR` sulla stessa colonna diventano lunghi. `IN` controlla che un valore sia in una lista: `customer IN ('Ana', 'Ben')` significa `customer = 'Ana' OR customer = 'Ben'`.",
-        "La lista va tra parentesi, con i valori separati da virgole."
-      ],
-      "goal": "Mostra il cliente e la quantità degli ordini di Ana, Chloe e Farid.",
-      "hints": [
-        "Aggiungi `WHERE customer IN (...)`.",
-        "Ogni nome è testo: tra apici, separati da virgole.",
-        "`WHERE customer IN ('Ana', 'Chloe', 'Farid')`"
-      ],
-      "recap": "`IN (...)` è un modo breve di scrivere più `OR` sulla stessa colonna."
-    },
-    "date-between": {
-      "title": "Un periodo: BETWEEN",
-      "intro": [
-        "`BETWEEN` tiene i valori da un inizio a una fine, entrambi inclusi: `quantity BETWEEN 10 AND 30` significa `quantity >= 10 AND quantity <= 30`.",
-        "Funziona con i numeri, e con le date scritte anno-mese-giorno."
-      ],
-      "goal": "Mostra il nome e la data dei mattoncini aggiunti dal 1° marzo al 30 giugno 2024.",
-      "hints": [
-        "Aggiungi una condizione su `added_on` con `BETWEEN ... AND ...`.",
-        "Entrambe le date sono testo tra apici: `'2024-03-01'` e `'2024-06-30'`.",
-        "`WHERE added_on BETWEEN '2024-03-01' AND '2024-06-30'`"
-      ],
-      "recap": "`BETWEEN` include entrambi gli estremi dell'intervallo."
-    },
-    "date-parts": {
-      "title": "Una parte della data",
-      "intro": [
-        "`strftime` estrae una parte di una data: `strftime('%Y', added_on)` dà l'anno, `'%m'` il mese, `'%d'` il giorno.",
-        "Attenzione ai tipi: il risultato è testo, quindi confrontalo con del testo, `'2023'`, non con il numero `2023`."
-      ],
-      "goal": "Mostra il nome e la data dei mattoncini aggiunti nel 2023.",
-      "hints": [
-        "Aggiungi una condizione che confronti `strftime('%Y', added_on)` con l'anno.",
-        "L'anno è testo: scrivilo tra apici.",
-        "`WHERE strftime('%Y', added_on) = '2023'`"
-      ],
-      "recap": "`strftime` restituisce testo: `'2023'` corrisponde, il numero `2023` no."
-    },
     "insert-row": {
       "title": "Aggiungere una riga: INSERT",
       "intro": [
@@ -342,20 +299,6 @@
         "`VALUES (11, 'Classic 1x2', 'green', 2, 0.10, 60, '2024-11-09');`"
       ],
       "recap": "I numeri così come sono, il testo e le date tra apici: ogni valore con il suo tipo, nell'ordine delle colonne."
-    },
-    "insert-defaults": {
-      "title": "Lascia completare il database",
-      "intro": [
-        "Un `id` dichiarato `INTEGER PRIMARY KEY` viene scelto dal database quando lo ometti: il prossimo numero libero. Due righe non possono avere lo stesso id.",
-        "Una colonna con un `DEFAULT` prende il suo valore predefinito quando la ometti: lo stato di un ordine è `'pending'`."
-      ],
-      "goal": "L'ordine di Gina fallisce: l'id 1 è già occupato. Inseriscilo di nuovo lasciando che il database scelga l'`id` e lo `status`.",
-      "hints": [
-        "Togli `id` e `status` dall'elenco delle colonne.",
-        "Togli anche i loro valori: i valori devono corrispondere alle colonne, uno per uno.",
-        "`INSERT INTO orders (customer, brick_id, quantity, ordered_on) VALUES ('Gina', 3, 20, '2024-11-12');`"
-      ],
-      "recap": "Ometti una colonna e il database la riempie: il prossimo id, il valore predefinito o `NULL`."
     },
     "update-one": {
       "title": "Modificare una riga: UPDATE",
@@ -398,6 +341,62 @@
         "`UPDATE orders SET status = 'shipped' WHERE status = 'pending' AND ordered_on < '2024-11-01';`"
       ],
       "recap": "Sai leggere, filtrare, aggiungere e modificare dati: `SELECT`, `WHERE`, `INSERT` e `UPDATE` sono la base di ogni database SQL."
+    },
+    "join-on": {
+      "title": "Due tabelle insieme: JOIN",
+      "intro": [
+        "Un ordine conserva solo l'id del suo mattoncino in `brick_id`: per sapere il nome del mattoncino, bisogna cercare la riga di `bricks` con quell'`id`.",
+        "`JOIN` lo fa per te: `FROM orders JOIN bricks ON orders.brick_id = bricks.id` attacca ogni ordine al suo mattoncino. Scrivi `table.column` per dire da quale tabella viene una colonna."
+      ],
+      "goal": "Mostra il cliente di ogni ordine e il nome del mattoncino ordinato.",
+      "hints": [
+        "Aggiungi `JOIN bricks ON ...` dopo `FROM orders`.",
+        "La condizione collega `orders.brick_id` a `bricks.id`, poi seleziona `orders.customer` e `bricks.name`.",
+        "`SELECT orders.customer, bricks.name FROM orders JOIN bricks ON orders.brick_id = bricks.id;`"
+      ],
+      "recap": "`JOIN ... ON` tiene solo le righe che corrispondono nelle due tabelle: i mattoncini mai ordinati non compaiono."
+    },
+    "join-alias": {
+      "title": "Nomi brevi per le tabelle",
+      "intro": [
+        "Le due tabelle hanno una colonna `id`: SQLite non sa quale vuoi e risponde `ambiguous column name`.",
+        "Dai a ogni tabella un nome breve con `AS`: `FROM orders AS o JOIN bricks AS b`. Così `o.id` è l'id dell'ordine e `b.id` quello del mattoncino."
+      ],
+      "goal": "Correggi l'errore: mostra l'id dell'ordine, il cliente e il nome del mattoncino, con i nomi brevi `o` e `b`.",
+      "hints": [
+        "Scrivi `orders AS o` e `bricks AS b`, poi usa `o.` e `b.` ovunque, anche nell'`ON`.",
+        "L'id che vuoi è quello dell'ordine: `o.id`.",
+        "`SELECT o.id, o.customer, b.name FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id;`"
+      ],
+      "recap": "I nomi brevi rendono leggibili i join, e `o.id` o `b.id` dice esattamente quale colonna vuoi."
+    },
+    "join-where": {
+      "title": "Filtrare un join",
+      "intro": [
+        "Un `WHERE` va dopo il `JOIN`, e può usare le colonne di entrambe le tabelle.",
+        "Qui il colore viene da `bricks` e lo stato da `orders`: una sola query risponde a una domanda su entrambe."
+      ],
+      "goal": "Mostra solo gli ordini spediti (stato `'shipped'`) di mattoncini rossi (`red`).",
+      "hints": [
+        "Aggiungi un `WHERE` dopo l'`ON`, con due condizioni unite da `AND`.",
+        "Una condizione su `b.color`, una su `o.status`.",
+        "`WHERE b.color = 'red' AND o.status = 'shipped'`"
+      ],
+      "recap": "Dopo un `JOIN`, `WHERE` filtra con le colonne di tutte le tabelle unite."
+    },
+    "join-compute": {
+      "title": "Calcolare tra tabelle",
+      "intro": [
+        "La quantità è in `orders`, il prezzo in `bricks`: una volta unite, puoi calcolare con entrambe, come `o.quantity * b.price`.",
+        "Dai un nome al risultato con `AS` e ordina con `ORDER BY`, come con una sola tabella."
+      ],
+      "goal": "Mostra il cliente, il mattoncino e il prezzo totale di ogni ordine (chiamato `total`), il più caro per primo.",
+      "hints": [
+        "Sostituisci `o.quantity` con `o.quantity * b.price AS total`.",
+        "Aggiungi `ORDER BY total DESC` alla fine.",
+        "`SELECT o.customer, b.name, o.quantity * b.price AS total FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id ORDER BY total DESC;`"
+      ],
+      "recap": "Sai leggere, filtrare, aggiungere, modificare e unire dati: `SELECT`, `WHERE`, `INSERT`, `UPDATE` e `JOIN` sono la base di ogni database SQL."
     }
   },
   "moreGames": {

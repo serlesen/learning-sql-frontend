@@ -10,12 +10,12 @@ database, checks the result against the expected one and offers hints. It is the
 | 1–4 | `SELECT`, `AS`, `ORDER BY` | read a table, pick, rename and sort columns |
 | 5–8 | `WHERE` with `=`, `<`, `>`, `LIKE` | filter numbers and text (quotes) |
 | 9 | dates | compare dates written `'YYYY-MM-DD'` |
-| 10–13 | `AND`, `OR`, parentheses, `IN` | combine conditions, and the `AND`-before-`OR` trap |
-| 14–15 | `BETWEEN`, `strftime` | periods and parts of a date (text vs number) |
-| 16–17 | `INSERT` | value types, generated ids and defaults |
-| 18–20 | `UPDATE` | change one row, compute from the old value, never forget the `WHERE` |
+| 10–12 | `AND`, `OR`, parentheses | combine conditions, and the `AND`-before-`OR` trap |
+| 13 | `INSERT` | value types |
+| 14–16 | `UPDATE` | change one row, compute from the old value, never forget the `WHERE` |
+| 17–20 | `JOIN` | link `orders` to `bricks`, short table names, filter and compute across both tables |
 
-The shop database has two tables, `bricks` (numbers, text, a `REAL` price and a `DATE`) and `orders`.
+The shop database has two tables, `bricks` (numbers, text, a `REAL` price and a `DATE`) and `orders`, linked by `orders.brick_id`.
 Students can browse them, with their column types, in the tabs of the database window.
 
 The interface and the lessons are available in English (default), French, Spanish, Italian and German, picked

@@ -34,11 +34,10 @@
     "moreThan30": "plus de 30, 30 exclu",
     "startsWithB": "commence par B",
     "before2024": "ajoutées avant 2024",
-    "bothIncluded": "10 et 30 inclus",
-    "monthAsText": "'09', '10', '11'... en texte",
     "fixTheTypes": "Le texte et les dates ont besoin de guillemets, pas les nombres",
-    "otherColumnsEmpty": "l'id est choisi par la base, les autres colonnes restent vides",
-    "doubleIt": "la nouvelle valeur est calculée à partir de l'ancienne"
+    "doubleIt": "la nouvelle valeur est calculée à partir de l'ancienne",
+    "matchingRowsOnly": "seulement les commandes qui ont un client correspondant",
+    "shortName": "o est un nom court pour orders"
   },
   "steps": {
     "label": "Étapes",
@@ -287,48 +286,6 @@
       ],
       "recap": "`AND` passe avant `OR` : ajoute des parenthèses dès que tu les mélanges, pour que la requête fasse ce que tu veux."
     },
-    "where-in": {
-      "title": "Une valeur d'une liste : IN",
-      "intro": [
-        "Plusieurs `OR` sur la même colonne, c'est long. `IN` vérifie qu'une valeur fait partie d'une liste : `customer IN ('Ana', 'Ben')` veut dire `customer = 'Ana' OR customer = 'Ben'`.",
-        "La liste va entre parenthèses, ses valeurs séparées par des virgules."
-      ],
-      "goal": "Affiche le client et la quantité des commandes d'Ana, Chloe et Farid.",
-      "hints": [
-        "Ajoute `WHERE customer IN (...)`.",
-        "Chaque nom est du texte : entre apostrophes, séparés par des virgules.",
-        "`WHERE customer IN ('Ana', 'Chloe', 'Farid')`"
-      ],
-      "recap": "`IN (...)` est une façon courte d'écrire plusieurs `OR` sur la même colonne."
-    },
-    "date-between": {
-      "title": "Une période : BETWEEN",
-      "intro": [
-        "`BETWEEN` garde les valeurs d'un début à une fin, les deux incluses : `quantity BETWEEN 10 AND 30` veut dire `quantity >= 10 AND quantity <= 30`.",
-        "Ça marche avec les nombres, et avec les dates écrites année-mois-jour."
-      ],
-      "goal": "Affiche le nom et la date des briques ajoutées du 1er mars au 30 juin 2024.",
-      "hints": [
-        "Ajoute une condition sur `added_on` avec `BETWEEN ... AND ...`.",
-        "Les deux dates sont du texte entre apostrophes : `'2024-03-01'` et `'2024-06-30'`.",
-        "`WHERE added_on BETWEEN '2024-03-01' AND '2024-06-30'`"
-      ],
-      "recap": "`BETWEEN` inclut les deux bornes de l'intervalle."
-    },
-    "date-parts": {
-      "title": "Une partie de la date",
-      "intro": [
-        "`strftime` extrait une partie d'une date : `strftime('%Y', added_on)` donne l'année, `'%m'` le mois, `'%d'` le jour.",
-        "Attention aux types : le résultat est du texte, compare-le donc à du texte, `'2023'`, pas au nombre `2023`."
-      ],
-      "goal": "Affiche le nom et la date des briques ajoutées en 2023.",
-      "hints": [
-        "Ajoute une condition qui compare `strftime('%Y', added_on)` à l'année.",
-        "L'année est du texte : écris-la entre apostrophes.",
-        "`WHERE strftime('%Y', added_on) = '2023'`"
-      ],
-      "recap": "`strftime` renvoie du texte : `'2023'` correspond, le nombre `2023` non."
-    },
     "insert-row": {
       "title": "Ajouter une ligne : INSERT",
       "intro": [
@@ -342,20 +299,6 @@
         "`VALUES (11, 'Classic 1x2', 'green', 2, 0.10, 60, '2024-11-09');`"
       ],
       "recap": "Les nombres tels quels, le texte et les dates entre apostrophes : chaque valeur avec son type, dans l'ordre des colonnes."
-    },
-    "insert-defaults": {
-      "title": "Laisser la base compléter",
-      "intro": [
-        "Un `id` déclaré `INTEGER PRIMARY KEY` est choisi par la base quand tu l'omets : le prochain numéro libre. Deux lignes ne peuvent pas avoir le même id.",
-        "Une colonne avec un `DEFAULT` prend sa valeur par défaut quand tu l'omets : le statut d'une commande est `'pending'`."
-      ],
-      "goal": "La commande de Gina échoue : l'id 1 est déjà pris. Insère-la de nouveau en laissant la base choisir l'`id` et le `status`.",
-      "hints": [
-        "Retire `id` et `status` de la liste des colonnes.",
-        "Retire aussi leurs valeurs : les valeurs doivent correspondre aux colonnes, une pour une.",
-        "`INSERT INTO orders (customer, brick_id, quantity, ordered_on) VALUES ('Gina', 3, 20, '2024-11-12');`"
-      ],
-      "recap": "Omets une colonne et la base la remplit : le prochain id, la valeur par défaut, ou `NULL`."
     },
     "update-one": {
       "title": "Modifier une ligne : UPDATE",
@@ -398,6 +341,62 @@
         "`UPDATE orders SET status = 'shipped' WHERE status = 'pending' AND ordered_on < '2024-11-01';`"
       ],
       "recap": "Tu sais lire, filtrer, ajouter et modifier des données : `SELECT`, `WHERE`, `INSERT` et `UPDATE` sont la base de toute base de données SQL."
+    },
+    "join-on": {
+      "title": "Deux tables à la fois : JOIN",
+      "intro": [
+        "Une commande garde seulement l'id de sa brique dans `brick_id` : pour connaître le nom de la brique, il faut chercher la ligne de `bricks` qui a cet `id`.",
+        "`JOIN` le fait pour toi : `FROM orders JOIN bricks ON orders.brick_id = bricks.id` colle chaque commande à sa brique. Écris `table.column` pour dire de quelle table vient une colonne."
+      ],
+      "goal": "Affiche le client de chaque commande et le nom de la brique commandée.",
+      "hints": [
+        "Ajoute `JOIN bricks ON ...` après `FROM orders`.",
+        "La condition relie `orders.brick_id` à `bricks.id`, puis sélectionne `orders.customer` et `bricks.name`.",
+        "`SELECT orders.customer, bricks.name FROM orders JOIN bricks ON orders.brick_id = bricks.id;`"
+      ],
+      "recap": "`JOIN ... ON` garde seulement les lignes qui correspondent dans les deux tables : les briques jamais commandées n'apparaissent pas."
+    },
+    "join-alias": {
+      "title": "Des noms courts pour les tables",
+      "intro": [
+        "Les deux tables ont une colonne `id` : SQLite ne sait pas laquelle tu veux et répond `ambiguous column name`.",
+        "Donne un nom court à chaque table avec `AS` : `FROM orders AS o JOIN bricks AS b`. Alors `o.id` est l'id de la commande et `b.id` celui de la brique."
+      ],
+      "goal": "Corrige l'erreur : affiche l'id de la commande, le client et le nom de la brique, avec les noms courts `o` et `b`.",
+      "hints": [
+        "Écris `orders AS o` et `bricks AS b`, puis utilise `o.` et `b.` partout, dans le `ON` aussi.",
+        "L'id voulu est celui de la commande : `o.id`.",
+        "`SELECT o.id, o.customer, b.name FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id;`"
+      ],
+      "recap": "Les noms courts rendent les jointures lisibles, et `o.id` ou `b.id` dit exactement quelle colonne tu veux."
+    },
+    "join-where": {
+      "title": "Filtrer une jointure",
+      "intro": [
+        "Un `WHERE` se place après le `JOIN`, et peut utiliser les colonnes des deux tables.",
+        "Ici, la couleur vient de `bricks` et le statut de `orders` : une seule requête répond à une question sur les deux."
+      ],
+      "goal": "Affiche seulement les commandes expédiées (statut `'shipped'`) de briques rouges (`red`).",
+      "hints": [
+        "Ajoute un `WHERE` après le `ON`, avec deux conditions reliées par `AND`.",
+        "Une condition sur `b.color`, une sur `o.status`.",
+        "`WHERE b.color = 'red' AND o.status = 'shipped'`"
+      ],
+      "recap": "Après un `JOIN`, `WHERE` filtre avec les colonnes de toutes les tables jointes."
+    },
+    "join-compute": {
+      "title": "Calculer entre deux tables",
+      "intro": [
+        "La quantité est dans `orders`, le prix dans `bricks` : une fois jointes, tu peux calculer avec les deux, comme `o.quantity * b.price`.",
+        "Nomme le résultat avec `AS` et trie avec `ORDER BY`, comme avec une seule table."
+      ],
+      "goal": "Affiche le client, la brique et le prix total de chaque commande (nommé `total`), la plus chère d'abord.",
+      "hints": [
+        "Remplace `o.quantity` par `o.quantity * b.price AS total`.",
+        "Ajoute `ORDER BY total DESC` à la fin.",
+        "`SELECT o.customer, b.name, o.quantity * b.price AS total FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id ORDER BY total DESC;`"
+      ],
+      "recap": "Tu sais lire, filtrer, ajouter, modifier et joindre des données : `SELECT`, `WHERE`, `INSERT`, `UPDATE` et `JOIN` sont la base de toute base de données SQL."
     }
   },
   "moreGames": {

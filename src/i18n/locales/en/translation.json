@@ -34,11 +34,10 @@
     "moreThan30": "more than 30, 30 excluded",
     "startsWithB": "starts with B",
     "before2024": "added before 2024",
-    "bothIncluded": "10 and 30 included",
-    "monthAsText": "'09', '10', '11'... as text",
     "fixTheTypes": "Text and dates need quotes, numbers don't",
-    "otherColumnsEmpty": "id is picked by the database, the other columns stay empty",
-    "doubleIt": "the new value is computed from the old one"
+    "doubleIt": "the new value is computed from the old one",
+    "matchingRowsOnly": "only the orders with a matching customer",
+    "shortName": "o is a short name for orders"
   },
   "steps": {
     "label": "Steps",
@@ -287,48 +286,6 @@
       ],
       "recap": "`AND` goes before `OR`: add parentheses whenever you mix them, so the query does what you mean."
     },
-    "where-in": {
-      "title": "One of a list: IN",
-      "intro": [
-        "Several `OR` on the same column get long. `IN` checks that a value is one of a list: `customer IN ('Ana', 'Ben')` means `customer = 'Ana' OR customer = 'Ben'`.",
-        "The list goes between parentheses, its values separated by commas."
-      ],
-      "goal": "Show the customer and quantity of the orders from Ana, Chloe and Farid.",
-      "hints": [
-        "Add `WHERE customer IN (...)`.",
-        "Each name is text: between quotes, separated by commas.",
-        "`WHERE customer IN ('Ana', 'Chloe', 'Farid')`"
-      ],
-      "recap": "`IN (...)` is a short way to write several `OR` on the same column."
-    },
-    "date-between": {
-      "title": "A period: BETWEEN",
-      "intro": [
-        "`BETWEEN` keeps the values from a start to an end, both included: `quantity BETWEEN 10 AND 30` means `quantity >= 10 AND quantity <= 30`.",
-        "It works on numbers, and on dates written year-month-day."
-      ],
-      "goal": "Show the name and date of the bricks added from March 1st to June 30th, 2024.",
-      "hints": [
-        "Add a condition on `added_on` with `BETWEEN ... AND ...`.",
-        "Both dates are quoted text: `'2024-03-01'` and `'2024-06-30'`.",
-        "`WHERE added_on BETWEEN '2024-03-01' AND '2024-06-30'`"
-      ],
-      "recap": "`BETWEEN` includes both ends of the range."
-    },
-    "date-parts": {
-      "title": "Part of a date",
-      "intro": [
-        "`strftime` extracts a part of a date: `strftime('%Y', added_on)` gives the year, `'%m'` the month, `'%d'` the day.",
-        "Careful with the types: the result is text, so compare it to text, `'2023'`, not to the number `2023`."
-      ],
-      "goal": "Show the name and date of the bricks added in 2023.",
-      "hints": [
-        "Add a condition comparing `strftime('%Y', added_on)` to the year.",
-        "The year is text: write it between quotes.",
-        "`WHERE strftime('%Y', added_on) = '2023'`"
-      ],
-      "recap": "`strftime` returns text: `'2023'` matches, the number `2023` does not."
-    },
     "insert-row": {
       "title": "Add a row: INSERT",
       "intro": [
@@ -342,20 +299,6 @@
         "`VALUES (11, 'Classic 1x2', 'green', 2, 0.10, 60, '2024-11-09');`"
       ],
       "recap": "Numbers as they are, text and dates in quotes: each value with its type, in the order of the columns."
-    },
-    "insert-defaults": {
-      "title": "Let the database fill in",
-      "intro": [
-        "An `id` declared as `INTEGER PRIMARY KEY` is picked by the database when you leave it out: the next free number. Two rows can't have the same id.",
-        "A column with a `DEFAULT` gets its default value when you leave it out: an order's status is `'pending'`."
-      ],
-      "goal": "The order from Gina fails: id 1 is taken. Insert it again, letting the database pick the `id` and the `status`.",
-      "hints": [
-        "Remove `id` and `status` from the list of columns.",
-        "Remove their values too: the values must match the columns, one for one.",
-        "`INSERT INTO orders (customer, brick_id, quantity, ordered_on) VALUES ('Gina', 3, 20, '2024-11-12');`"
-      ],
-      "recap": "Leave out a column and the database fills it: the next id, the default value, or `NULL`."
     },
     "update-one": {
       "title": "Change a row: UPDATE",
@@ -398,6 +341,62 @@
         "`UPDATE orders SET status = 'shipped' WHERE status = 'pending' AND ordered_on < '2024-11-01';`"
       ],
       "recap": "You can read, filter, add and change data: `SELECT`, `WHERE`, `INSERT` and `UPDATE` are the base of every SQL database."
+    },
+    "join-on": {
+      "title": "Two tables at once: JOIN",
+      "intro": [
+        "An order only keeps the id of its brick in `brick_id`: to know the name of the brick, look for the row of `bricks` with that `id`.",
+        "`JOIN` does it for you: `FROM orders JOIN bricks ON orders.brick_id = bricks.id` glues each order to its brick. Write `table.column` to say which table a column comes from."
+      ],
+      "goal": "Show the customer of each order and the name of the brick they ordered.",
+      "hints": [
+        "Add `JOIN bricks ON ...` after `FROM orders`.",
+        "The condition links `orders.brick_id` to `bricks.id`, then select `orders.customer` and `bricks.name`.",
+        "`SELECT orders.customer, bricks.name FROM orders JOIN bricks ON orders.brick_id = bricks.id;`"
+      ],
+      "recap": "`JOIN ... ON` keeps only the rows that match in both tables: the bricks never ordered don't show up."
+    },
+    "join-alias": {
+      "title": "Short names for tables",
+      "intro": [
+        "Both tables have an `id` column: SQLite doesn't know which one you mean and answers `ambiguous column name`.",
+        "Give each table a short name with `AS`: `FROM orders AS o JOIN bricks AS b`. Then `o.id` is the id of the order and `b.id` the id of the brick."
+      ],
+      "goal": "Fix the error: show the id of the order, the customer and the name of the brick, with the short names `o` and `b`.",
+      "hints": [
+        "Write `orders AS o` and `bricks AS b`, then use `o.` and `b.` everywhere, in the `ON` too.",
+        "The id you want is the one of the order: `o.id`.",
+        "`SELECT o.id, o.customer, b.name FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id;`"
+      ],
+      "recap": "Short names keep joins readable, and `o.id` or `b.id` says exactly which column you want."
+    },
+    "join-where": {
+      "title": "Filter a join",
+      "intro": [
+        "A `WHERE` goes after the `JOIN`, and can use the columns of both tables.",
+        "Here, the color comes from `bricks` and the status from `orders`: a single query answers a question about both."
+      ],
+      "goal": "Show only the shipped orders (status `'shipped'`) of red bricks (`red`).",
+      "hints": [
+        "Add a `WHERE` after the `ON`, with two conditions joined by `AND`.",
+        "One condition on `b.color`, one on `o.status`.",
+        "`WHERE b.color = 'red' AND o.status = 'shipped'`"
+      ],
+      "recap": "After a `JOIN`, `WHERE` filters with the columns of every joined table."
+    },
+    "join-compute": {
+      "title": "Compute across tables",
+      "intro": [
+        "The quantity is in `orders`, the price in `bricks`: once joined, you can compute with both, like `o.quantity * b.price`.",
+        "Name the result with `AS` and sort with `ORDER BY`, as you did with a single table."
+      ],
+      "goal": "Show the customer, the brick and the total price of each order (named `total`), the most expensive first.",
+      "hints": [
+        "Replace `o.quantity` with `o.quantity * b.price AS total`.",
+        "Add `ORDER BY total DESC` at the end.",
+        "`SELECT o.customer, b.name, o.quantity * b.price AS total FROM orders AS o JOIN bricks AS b ON o.brick_id = b.id ORDER BY total DESC;`"
+      ],
+      "recap": "You can read, filter, add, change and join data: `SELECT`, `WHERE`, `INSERT`, `UPDATE` and `JOIN` are the base of every SQL database."
     }
   },
   "moreGames": {
