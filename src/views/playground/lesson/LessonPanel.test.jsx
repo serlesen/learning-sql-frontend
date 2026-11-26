@@ -13,7 +13,7 @@ describe('LessonPanel', () => {
       render(<LessonPanel {...props} hintsShown={0} />)
 
       expect(screen.getByRole('heading', { name: 'Your first query' })).toBeInTheDocument()
-      expect(screen.getByText('Step 1 of 24')).toBeInTheDocument()
+      expect(screen.getByText('Step 1 of 20')).toBeInTheDocument()
       expect(screen.getByText(/Change it to show every column/)).toBeInTheDocument()
       expect(screen.getByText('SELECT * FROM customers; -- * means every column')).toBeInTheDocument()
     })

@@ -34,10 +34,7 @@
     "moreThan30": "mehr als 30, ohne 30",
     "startsWithB": "beginnt mit B",
     "before2024": "vor 2024 hinzugefügt",
-    "bothIncluded": "10 und 30 eingeschlossen",
-    "monthAsText": "'09', '10', '11'... als Text",
     "fixTheTypes": "Text und Datumsangaben brauchen Anführungszeichen, Zahlen nicht",
-    "otherColumnsEmpty": "die id wählt die Datenbank, die anderen Spalten bleiben leer",
     "doubleIt": "der neue Wert wird aus dem alten berechnet",
     "matchingRowsOnly": "nur die Bestellungen mit passendem Kunden",
     "shortName": "o ist ein Kurzname für orders"
@@ -289,48 +286,6 @@
       ],
       "recap": "`AND` kommt vor `OR`: Setz Klammern, sobald du beide mischst, damit die Abfrage tut, was du meinst."
     },
-    "where-in": {
-      "title": "Einer aus einer Liste: IN",
-      "intro": [
-        "Mehrere `OR` auf dieselbe Spalte werden lang. `IN` prüft, ob ein Wert in einer Liste steht: `customer IN ('Ana', 'Ben')` bedeutet `customer = 'Ana' OR customer = 'Ben'`.",
-        "Die Liste steht in Klammern, ihre Werte durch Kommas getrennt."
-      ],
-      "goal": "Zeig Kunde und Menge der Bestellungen von Ana, Chloe und Farid.",
-      "hints": [
-        "Füge `WHERE customer IN (...)` hinzu.",
-        "Jeder Name ist Text: in Anführungszeichen, durch Kommas getrennt.",
-        "`WHERE customer IN ('Ana', 'Chloe', 'Farid')`"
-      ],
-      "recap": "`IN (...)` ist eine kurze Schreibweise für mehrere `OR` auf dieselbe Spalte."
-    },
-    "date-between": {
-      "title": "Ein Zeitraum: BETWEEN",
-      "intro": [
-        "`BETWEEN` behält die Werte von einem Anfang bis zu einem Ende, beide eingeschlossen: `quantity BETWEEN 10 AND 30` bedeutet `quantity >= 10 AND quantity <= 30`.",
-        "Das funktioniert mit Zahlen und mit Datumsangaben im Format Jahr-Monat-Tag."
-      ],
-      "goal": "Zeig Name und Datum der Steine, die vom 1. März bis 30. Juni 2024 hinzugefügt wurden.",
-      "hints": [
-        "Füge eine Bedingung auf `added_on` mit `BETWEEN ... AND ...` hinzu.",
-        "Beide Datumsangaben sind Text in Anführungszeichen: `'2024-03-01'` und `'2024-06-30'`.",
-        "`WHERE added_on BETWEEN '2024-03-01' AND '2024-06-30'`"
-      ],
-      "recap": "`BETWEEN` schließt beide Enden des Bereichs ein."
-    },
-    "date-parts": {
-      "title": "Ein Teil des Datums",
-      "intro": [
-        "`strftime` holt einen Teil aus einem Datum: `strftime('%Y', added_on)` liefert das Jahr, `'%m'` den Monat, `'%d'` den Tag.",
-        "Achte auf die Typen: Das Ergebnis ist Text, vergleiche es also mit Text, `'2023'`, nicht mit der Zahl `2023`."
-      ],
-      "goal": "Zeig Name und Datum der Steine, die 2023 hinzugefügt wurden.",
-      "hints": [
-        "Füge eine Bedingung hinzu, die `strftime('%Y', added_on)` mit dem Jahr vergleicht.",
-        "Das Jahr ist Text: Schreib es in Anführungszeichen.",
-        "`WHERE strftime('%Y', added_on) = '2023'`"
-      ],
-      "recap": "`strftime` liefert Text: `'2023'` passt, die Zahl `2023` nicht."
-    },
     "insert-row": {
       "title": "Eine Zeile hinzufügen: INSERT",
       "intro": [
@@ -344,20 +299,6 @@
         "`VALUES (11, 'Classic 1x2', 'green', 2, 0.10, 60, '2024-11-09');`"
       ],
       "recap": "Zahlen einfach so, Text und Datumsangaben in Anführungszeichen: jeder Wert mit seinem Typ, in der Reihenfolge der Spalten."
-    },
-    "insert-defaults": {
-      "title": "Die Datenbank ergänzen lassen",
-      "intro": [
-        "Eine `id`, die als `INTEGER PRIMARY KEY` deklariert ist, wählt die Datenbank, wenn du sie weglässt: die nächste freie Nummer. Zwei Zeilen können nicht dieselbe id haben.",
-        "Eine Spalte mit `DEFAULT` bekommt ihren Standardwert, wenn du sie weglässt: Der Status einer Bestellung ist `'pending'`."
-      ],
-      "goal": "Ginas Bestellung schlägt fehl: Die id 1 ist schon vergeben. Füge sie erneut ein und lass die Datenbank `id` und `status` wählen.",
-      "hints": [
-        "Nimm `id` und `status` aus der Spaltenliste.",
-        "Nimm auch ihre Werte heraus: Die Werte müssen zu den Spalten passen, einer pro Spalte.",
-        "`INSERT INTO orders (customer, brick_id, quantity, ordered_on) VALUES ('Gina', 3, 20, '2024-11-12');`"
-      ],
-      "recap": "Lass eine Spalte weg und die Datenbank füllt sie: die nächste id, den Standardwert oder `NULL`."
     },
     "update-one": {
       "title": "Eine Zeile ändern: UPDATE",
